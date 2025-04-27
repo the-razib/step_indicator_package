@@ -1,6 +1,4 @@
-Here is a professional `README.md` documentation for your package:
 
-```markdown
 # Step Indicator Package
 
 A customizable and interactive step indicator widget for Flutter applications. This package allows you to visually represent the progress of a multi-step process, such as a form wizard or a task tracker, with navigation controls and dynamic updates.
@@ -121,5 +119,5 @@ This package is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Additional Information
 
 For more details, visit the [official documentation](https://pub.dev/packages/step_indicator_package) or contact the package authors.
-```
+
 
