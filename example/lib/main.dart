@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 }
 
 class StepIndicatorExample extends StatelessWidget {
-  StepIndicatorExample({super.key});
+  const StepIndicatorExample({super.key});
 
 
 

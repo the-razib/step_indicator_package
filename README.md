@@ -112,7 +112,7 @@ The `StepIndicator` widget provides several properties for customization:
 
 ## Contributing
 
-Contributions are welcome! If you encounter any issues or have feature requests, please file them in the [issue tracker](https://github.com/your-repo/step-indicator-package/issues).
+Contributions are welcome! If you encounter any issues or have feature requests, please file them in the [issue tracker](https://github.com/the-razib/step_indicator_package/issues).
 
 ## License
 
