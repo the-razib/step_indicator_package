@@ -1,27 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:step_indicator_package/step_indicator_package.dart';
+import 'package:step_indicator_package/step_indicator.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const StepIndicatorExampleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// A simple example app to demonstrate the usage of StepIndicator widget
+class StepIndicatorExampleApp extends StatelessWidget {
+  const StepIndicatorExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      title: 'Step Indicator Example',
       debugShowCheckedModeBanner: false,
-      home: StepIndicatorExample(),
+      home: const StepIndicatorExamplePage(),
     );
   }
 }
 
-class StepIndicatorExample extends StatelessWidget {
-  const StepIndicatorExample({super.key});
+/// The main page showing how to use StepIndicator with controller
+class StepIndicatorExamplePage extends StatefulWidget {
+  const StepIndicatorExamplePage({super.key});
 
+  @override
+  State<StepIndicatorExamplePage> createState() => _StepIndicatorExamplePageState();
+}
 
+class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
+  // Create a controller to manage the current step
+  late StepIndicatorController stepController;
+
+  @override
+  void initState() {
+    super.initState();
+    stepController = StepIndicatorController(
+      maxSteps: 3, // (Total steps - 1)
+      initialStep: 1, // Start from step 1
+      onStepChanged: (step) {
+        debugPrint('Step changed to: $step');
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    // Always dispose controller if created manually
+    Get.delete<StepIndicatorController>();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,34 +62,27 @@ class StepIndicatorExample extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // StepIndicator Widget
             StepIndicator(
-              // controller: customController, // <- inject custom controller
-              steps: const ["Request", "Pending", "Confirmed", "Completed"],
+              steps: const ["Requested", "Processing", "Shipped", "Delivered"],
+              controller: stepController,
+              allowCircleTap: true,
+              initialStep: 1,
+              onStepChanged: (index) {
+                debugPrint('Current selected step: $index');
+              },
               activeColor: Colors.green,
-              activeLineColor: Colors.green,
               inactiveColor: Colors.grey,
-              inactiveLineColor: Colors.grey.shade300,
-              showNavigationButtons: true, // shows Prev/Next buttons
-              showStepsText: true,          // shows step labels
+              activeLineColor: Colors.green,
+              inactiveLineColor: Colors.grey,
+              showNavigationButtons: true,
+              showStepsText: true,
             ),
-
             const SizedBox(height: 40),
-
-            // You can also control it manually anywhere!
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // ElevatedButton(
-                //   onPressed: () => customController.setStep(0),
-                //   child: const Text('Go to Start'),
-                // ),
-                // const SizedBox(width: 20),
-                // ElevatedButton(
-                //   onPressed: () => customController.setStep(3),
-                //   child: const Text('Complete'),
-                // ),
-              ],
+            ElevatedButton(
+              onPressed: () {
+                stepController.setStep(2); // Example: Move to step 2 programmatically
+              },
+              child: const Text('Move to Step 3'),
             ),
           ],
         ),

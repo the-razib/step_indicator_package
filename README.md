@@ -1,21 +1,32 @@
 
 # Step Indicator Package
 
-A customizable and interactive step indicator widget for Flutter applications. This package allows you to visually represent the progress of a multi-step process, such as a form wizard or a task tracker, with navigation controls and dynamic updates.
+A highly customizable and interactive **step indicator widget** for Flutter applications.  
+Perfect for representing multi-step workflows such as onboarding flows, form wizards, order tracking, and more!
 
-## Features
+<p align="center">
+  <img src="step_indicator_demo.png" alt="Step Indicator Demo" width="500"/>
+</p>
 
-- **Customizable Design**: Adjust colors, sizes, icons, and text styles to match your app's theme.
-- **Interactive Steps**: Users can tap on steps to navigate directly.
-- **Navigation Buttons**: Built-in "Next" and "Previous" buttons for easy navigation.
-- **Dynamic Updates**: Automatically updates the progress line and step indicators based on user interaction.
-- **Reactive State Management**: Powered by the `GetX` package for efficient state management.
+---
 
-## Getting Started
+## ✨ Features
+
+- 🎨 **Fully Customizable**: Adjust colors, icons, sizes, and text styles.
+- 🖐️ **Interactive Steps**: Users can tap steps (or disable tap for controlled flow).
+- 🔀 **Navigation Buttons**: Built-in "Next" and "Previous" navigation buttons.
+- ⚡ **Dynamic Updates**: Instantly reflect user interactions and state changes.
+- 🧠 **Reactive State Management**: Powered by [GetX](https://pub.dev/packages/get) for smooth and efficient updates.
+- ⚙️ **Programmatic Control**: Jump to any step dynamically using the controller.
+- 🛠️ **Flexible Initialization**: Set initial step easily and listen for step changes.
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Ensure you have the following dependencies in your `pubspec.yaml` file:
+Add the required dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
@@ -24,25 +35,27 @@ dependencies:
   get: ^4.6.5
 ```
 
+---
+
 ### Installation
 
-Add the package to your project by running:
+Run the following command:
 
 ```bash
 flutter pub add step_indicator_package
 ```
 
-Then, import it in your Dart file:
+Then, import it:
 
 ```dart
 import 'package:step_indicator_package/step_indicator_package.dart';
 ```
 
-## Usage
+---
+
+## 🛠️ Usage
 
 ### Basic Example
-
-Here is a simple example of how to use the `StepIndicator` widget:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -75,16 +88,28 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+---
+
 ### Advanced Example
 
-For more control, you can pass a custom `StepIndicatorController` to manage the state programmatically:
+Control steps manually with a custom controller:
 
 ```dart
-final controller = StepIndicatorController(maxSteps: 3);
+import 'package:flutter/material.dart';
+import 'package:step_indicator_package/step_indicator_package.dart';
+
+final controller = StepIndicatorController(
+  maxSteps: 3,
+  initialStep: 1,
+  onStepChanged: (index) {
+    debugPrint('Current Step Changed To: $index');
+  },
+);
 
 StepIndicator(
   steps: ["Request", "Pending", "Confirmed", "Completed"],
   controller: controller,
+  allowCircleTap: true, // Allow users to tap steps
   showNavigationButtons: true,
   previousButton: ElevatedButton(
     onPressed: controller.previousStep,
@@ -97,27 +122,55 @@ StepIndicator(
 );
 ```
 
-## Customization
+---
 
-The `StepIndicator` widget provides several properties for customization:
+## 🎨 Customization Options
 
-- **Steps**: Define the labels for each step.
-- **Colors**: Customize active/inactive colors for steps and lines.
-- **Icons**: Use custom icons for active steps and navigation arrows.
-- **Dimensions**: Adjust circle radius, line height, and spacing.
-- **Text Styles**: Customize the font size and style of step labels.
-- **Animation**: Control the animation duration for progress updates.
+| Property             | Description                                  | Default                |
+|----------------------|----------------------------------------------|------------------------|
+| `steps`              | List of step labels                         | `["Request", "Pending", "Confirmed", "Completed"]` |
+| `activeColor`        | Active step color                           | `Color(0xff003285)`    |
+| `inactiveColor`      | Inactive step color                         | `Color(0xFFB0BEC5)`    |
+| `activeLineColor`    | Active progress line color                  | `Color(0xFF1A237E)`    |
+| `inactiveLineColor`  | Inactive progress line color                | `Color(0xFFE0E0E0)`    |
+| `allowCircleTap`     | Enable/Disable tapping on steps             | `true`                 |
+| `initialStep`        | Start the indicator from a specific step    | `0`                    |
+| `onStepChanged`      | Callback when the current step changes      | `null`                 |
+| `showNavigationButtons` | Show Next/Previous buttons              | `true`                 |
+| `animationDuration`  | Duration for animation effects              | `300ms`                |
 
-## Contributing
+---
 
-Contributions are welcome! If you encounter any issues or have feature requests, please file them in the [issue tracker](https://github.com/the-razib/step_indicator_package/issues).
+## 📦 Example Project
 
-## License
+You can find a complete working example inside the `/example/` folder.  
+Simply run:
 
-This package is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```bash
+cd example
+flutter run
+```
 
-## Additional Information
+---
 
-For more details, visit the [official documentation](https://pub.dev/packages/step_indicator_package) or contact the package authors.
+## 📈 Contributing
 
+Contributions are welcome!  
+Feel free to open issues or submit pull requests in the [GitHub repository](https://github.com/the-razib/step_indicator_package/issues).
+
+---
+
+## 📜 License
+
+Distributed under the MIT License.  
+See the [LICENSE](LICENSE) file for more information.
+
+---
+
+## 📚 Additional Resources
+
+- Official Docs: [Pub.dev Page](https://pub.dev/packages/step_indicator_package)
+- Author: [The Razib](https://github.com/the-razib)
+
+---
 

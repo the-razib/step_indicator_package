@@ -25,6 +25,9 @@ class StepIndicator extends StatelessWidget {
   final Widget? nextButton;
   final bool showNavigationButtons;
   final bool showStepsText;
+  final bool allowCircleTap;
+  final int initialStep;
+  final void Function(int)? onStepChanged;
 
   const StepIndicator({
     super.key,
@@ -49,12 +52,19 @@ class StepIndicator extends StatelessWidget {
     this.nextButton,
     this.showNavigationButtons = true,
     this.showStepsText = true,
+    this.allowCircleTap = true,
+    this.initialStep = 0,
+    this.onStepChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     final StepIndicatorController ctrl = controller ??
-        Get.put(StepIndicatorController(maxSteps: steps.length - 1));
+        Get.put(StepIndicatorController(
+          maxSteps: steps.length - 1,
+          initialStep: initialStep,
+          onStepChanged: onStepChanged,
+        ));
 
     final screenWidth = MediaQuery.of(context).size.width;
     final availableWidth = screenWidth - paddingHorizontal;
@@ -194,7 +204,7 @@ class StepIndicator extends StatelessWidget {
                   bool isCompleted = index <= current;
 
                   return GestureDetector(
-                    onTap: () => ctrl.setStep(index),
+                    onTap: allowCircleTap ? () => ctrl.setStep(index) : null,
                     child: SizedBox(
                       width: circleRadius * 2,
                       height: circleRadius * 2,
