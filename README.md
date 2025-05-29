@@ -1,176 +1,126 @@
-
 # Step Indicator Package
 
-A highly customizable and interactive **step indicator widget** for Flutter applications.  
-Perfect for representing multi-step workflows such as onboarding flows, form wizards, order tracking, and more!
+A customizable step indicator widget for Flutter applications. This package provides a beautiful and flexible way to show progress through a series of steps.
 
-<p align="center">
-  <img src="step_indicator_demo.png" alt="Step Indicator Demo" width="500"/>
-</p>
+## Features
 
----
+- Customizable step indicators with labels
+- Animated progress transitions
+- Navigation buttons (Previous/Next)
+- Customizable colors, sizes, and icons
+- Tap to navigate between steps
+- Built-in state management
+- No external dependencies
 
-## ✨ Features
+## Installation
 
-- 🎨 **Fully Customizable**: Adjust colors, icons, sizes, and text styles.
-- 🖐️ **Interactive Steps**: Users can tap steps (or disable tap for controlled flow).
-- 🔀 **Navigation Buttons**: Built-in "Next" and "Previous" navigation buttons.
-- ⚡ **Dynamic Updates**: Instantly reflect user interactions and state changes.
-- 🧠 **Reactive State Management**: Powered by [GetX](https://pub.dev/packages/get) for smooth and efficient updates.
-- ⚙️ **Programmatic Control**: Jump to any step dynamically using the controller.
-- 🛠️ **Flexible Initialization**: Set initial step easily and listen for step changes.
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Add the required dependencies to your `pubspec.yaml`:
+Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  get: ^4.6.5
+  step_indicator_package: ^1.1.0
 ```
 
----
+## Usage
 
-### Installation
-
-Run the following command:
-
-```bash
-flutter pub add step_indicator_package
-```
-
-Then, import it:
+### Basic Usage
 
 ```dart
-import 'package:step_indicator_package/step_indicator_package.dart';
+StepIndicator(
+  steps: const ["Requested", "Processing", "Shipped", "Delivered"],
+  initialStep: 0,
+  onStepChanged: (step) {
+    print('Current step: $step');
+  },
+)
 ```
 
----
-
-## 🛠️ Usage
-
-### Basic Example
+### With Custom State Management
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:step_indicator_package/step_indicator_package.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Step Indicator Example')),
-        body: Center(
-          child: StepIndicator(
-            steps: ["Step 1", "Step 2", "Step 3", "Step 4"],
-            activeColor: Colors.blue,
-            inactiveColor: Colors.grey,
-            activeLineColor: Colors.blueAccent,
-            inactiveLineColor: Colors.grey.shade300,
-          ),
-        ),
-      ),
-    );
-  }
-}
-```
-
----
-
-### Advanced Example
-
-Control steps manually with a custom controller:
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:step_indicator_package/step_indicator_package.dart';
-
-final controller = StepIndicatorController(
+// Create a state instance
+final stepState = StepIndicatorState(
   maxSteps: 3,
-  initialStep: 1,
-  onStepChanged: (index) {
-    debugPrint('Current Step Changed To: $index');
+  initialStep: 0,
+  onStepChanged: (step) {
+    print('Step changed to: $step');
   },
 );
 
+// Use the widget
 StepIndicator(
-  steps: ["Request", "Pending", "Confirmed", "Completed"],
-  controller: controller,
-  allowCircleTap: true, // Allow users to tap steps
+  steps: const ["Step 1", "Step 2", "Step 3", "Step 4"],
+  state: stepState,
+)
+```
+
+### Customization Options
+
+```dart
+StepIndicator(
+  steps: const ["Step 1", "Step 2", "Step 3"],
+  circleRadius: 20.0,
+  lineHeight: 8.0,
+  fontSize: 12.0,
+  activeColor: Colors.blue,
+  inactiveColor: Colors.grey,
+  activeLineColor: Colors.blue,
+  inactiveLineColor: Colors.grey,
+  activeIcon: Icons.check,
   showNavigationButtons: true,
-  previousButton: ElevatedButton(
-    onPressed: controller.previousStep,
-    child: const Text('Back'),
-  ),
-  nextButton: ElevatedButton(
-    onPressed: controller.nextStep,
-    child: const Text('Next'),
-  ),
-);
+  showStepsText: true,
+  allowCircleTap: true,
+)
 ```
 
----
+## Parameters
 
-## 🎨 Customization Options
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| steps | List<String> | ["Request", "Pending", "Confirmed", "Completed"] | List of step labels |
+| state | StepIndicatorState? | null | Optional state management instance |
+| circleRadius | double | 20.0 | Radius of the step circles |
+| lineHeight | double | 8.0 | Height of the connecting lines |
+| fontSize | double | 10.0 | Font size for step labels |
+| paddingHorizontal | double | 32.0 | Horizontal padding |
+| sideLineLength | double | 20.0 | Length of side lines |
+| activeColor | Color | Color(0xff003285) | Color for active step text |
+| inactiveColor | Color | Color(0xFFB0BEC5) | Color for inactive step text |
+| activeLineColor | Color | Color(0xFF1A237E) | Color for active lines |
+| inactiveLineColor | Color | Color(0xFFE0E0E0) | Color for inactive lines |
+| activeIcon | IconData | Icons.check | Icon for completed steps |
+| leftArrowIcon | IconData | Icons.arrow_right_alt | Icon for left arrow |
+| rightArrowIcon | IconData | Icons.arrow_right_alt | Icon for right arrow |
+| iconSize | double | 20.0 | Size of icons |
+| labelTextStyle | TextStyle? | null | Custom text style for labels |
+| animationDuration | Duration | Duration(milliseconds: 300) | Animation duration |
+| previousButton | Widget? | null | Custom previous button |
+| nextButton | Widget? | null | Custom next button |
+| showNavigationButtons | bool | true | Show navigation buttons |
+| showStepsText | bool | true | Show step labels |
+| allowCircleTap | bool | true | Allow tapping on circles |
+| initialStep | int | 0 | Initial step index |
+| onStepChanged | Function(int)? | null | Callback when step changes |
 
-| Property             | Description                                  | Default                |
-|----------------------|----------------------------------------------|------------------------|
-| `steps`              | List of step labels                         | `["Request", "Pending", "Confirmed", "Completed"]` |
-| `activeColor`        | Active step color                           | `Color(0xff003285)`    |
-| `inactiveColor`      | Inactive step color                         | `Color(0xFFB0BEC5)`    |
-| `activeLineColor`    | Active progress line color                  | `Color(0xFF1A237E)`    |
-| `inactiveLineColor`  | Inactive progress line color                | `Color(0xFFE0E0E0)`    |
-| `allowCircleTap`     | Enable/Disable tapping on steps             | `true`                 |
-| `initialStep`        | Start the indicator from a specific step    | `0`                    |
-| `onStepChanged`      | Callback when the current step changes      | `null`                 |
-| `showNavigationButtons` | Show Next/Previous buttons              | `true`                 |
-| `animationDuration`  | Duration for animation effects              | `300ms`                |
+## State Management
 
----
+The package uses Flutter's built-in state management through `ChangeNotifier`. You can either:
 
-## 📦 Example Project
+1. Let the widget manage its own state by providing `initialStep` and `onStepChanged`
+2. Provide your own `StepIndicatorState` instance for more control
 
-You can find a complete working example inside the `/example/` folder.  
-Simply run:
+### StepIndicatorState Methods
 
-```bash
-cd example
-flutter run
-```
+- `nextStep()`: Move to the next step
+- `previousStep()`: Move to the previous step
+- `setStep(int step)`: Set a specific step
+- `currentStep`: Get the current step index
 
----
+## Example
 
-## 📈 Contributing
+Check out the [example](example) directory for a complete implementation.
 
-Contributions are welcome!  
-Feel free to open issues or submit pull requests in the [GitHub repository](https://github.com/the-razib/step_indicator_package/issues).
+## License
 
----
-
-## 📜 License
-
-Distributed under the MIT License.  
-See the [LICENSE](LICENSE) file for more information.
-
----
-
-## 📚 Additional Resources
-
-- Official Docs: [Pub.dev Page](https://pub.dev/packages/step_indicator_package)
-- Author: [The Razib](https://github.com/the-razib)
-
----
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
