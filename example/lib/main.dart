@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:step_indicator_package/step_indicator.dart';
 
 void main() {
@@ -12,7 +11,7 @@ class StepIndicatorExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       title: 'Step Indicator Example',
       debugShowCheckedModeBanner: false,
       home: const StepIndicatorExamplePage(),
@@ -25,30 +24,23 @@ class StepIndicatorExamplePage extends StatefulWidget {
   const StepIndicatorExamplePage({super.key});
 
   @override
-  State<StepIndicatorExamplePage> createState() => _StepIndicatorExamplePageState();
+  State<StepIndicatorExamplePage> createState() =>
+      _StepIndicatorExamplePageState();
 }
 
 class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
-  // Create a controller to manage the current step
-  late StepIndicatorController stepController;
+  late StepIndicatorState stepState;
 
   @override
   void initState() {
     super.initState();
-    stepController = StepIndicatorController(
+    stepState = StepIndicatorState(
       maxSteps: 3, // (Total steps - 1)
       initialStep: 1, // Start from step 1
       onStepChanged: (step) {
         debugPrint('Step changed to: $step');
       },
     );
-  }
-
-  @override
-  void dispose() {
-    // Always dispose controller if created manually
-    Get.delete<StepIndicatorController>();
-    super.dispose();
   }
 
   @override
@@ -64,7 +56,7 @@ class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
           children: [
             StepIndicator(
               steps: const ["Requested", "Processing", "Shipped", "Delivered"],
-              controller: stepController,
+              state: stepState,
               allowCircleTap: true,
               initialStep: 1,
               onStepChanged: (index) {
@@ -80,7 +72,9 @@ class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
-                stepController.setStep(2); // Example: Move to step 2 programmatically
+                stepState.setStep(
+                  2,
+                ); // Example: Move to step 2 programmatically
               },
               child: const Text('Move to Step 3'),
             ),
