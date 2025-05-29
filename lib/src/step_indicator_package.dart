@@ -1,11 +1,12 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'step_indicator_controller.dart';
 
-class StepIndicator extends StatelessWidget {
+class StepIndicator extends StatefulWidget {
   final List<String> steps;
-  final StepIndicatorController? controller;
+  final StepIndicatorState? state;
   final double circleRadius;
   final double lineHeight;
   final double fontSize;
@@ -32,7 +33,7 @@ class StepIndicator extends StatelessWidget {
   const StepIndicator({
     super.key,
     this.steps = const ["Request", "Pending", "Confirmed", "Completed"],
-    this.controller,
+    this.state,
     this.circleRadius = 20.0,
     this.lineHeight = 8.0,
     this.fontSize = 10.0,
@@ -58,102 +59,115 @@ class StepIndicator extends StatelessWidget {
   });
 
   @override
+  State<StepIndicator> createState() => _StepIndicatorState();
+}
+
+class _StepIndicatorState extends State<StepIndicator> {
+  late StepIndicatorState _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _state =
+        widget.state ??
+        StepIndicatorState(
+          maxSteps: widget.steps.length - 1,
+          initialStep: widget.initialStep,
+          onStepChanged: widget.onStepChanged,
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final StepIndicatorController ctrl = controller ??
-        Get.put(StepIndicatorController(
-          maxSteps: steps.length - 1,
-          initialStep: initialStep,
-          onStepChanged: onStepChanged,
-        ));
-
     final screenWidth = MediaQuery.of(context).size.width;
-    final availableWidth = screenWidth - paddingHorizontal;
+    final availableWidth = screenWidth - widget.paddingHorizontal;
     final spacing =
-        (availableWidth - (steps.length * (circleRadius * 2))) /
-            (steps.length - 1);
+        (availableWidth - (widget.steps.length * (widget.circleRadius * 2))) /
+        (widget.steps.length - 1);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (showStepsText) _buildStepLabels(ctrl, spacing),
-        const SizedBox(height: 8),
-        _buildProgressLine(ctrl, availableWidth, spacing),
-        if (showNavigationButtons) ...[
-          const SizedBox(height: 20),
-          _buildNavigationButtons(ctrl),
-        ],
-      ],
+    return ListenableBuilder(
+      listenable: _state,
+      builder: (context, _) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.showStepsText) _buildStepLabels(spacing),
+            const SizedBox(height: 8),
+            _buildProgressLine(availableWidth, spacing),
+            if (widget.showNavigationButtons) ...[
+              const SizedBox(height: 20),
+              _buildNavigationButtons(),
+            ],
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildStepLabels(StepIndicatorController ctrl, double spacing) {
-    return Obx(() {
-      int current = ctrl.currentStep.value;
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(steps.length, (index) {
-          bool isActive = index <= current;
-          return SizedBox(
-            width: circleRadius * 0.1 + spacing,
-            child: Text(
-              steps[index],
-              style: labelTextStyle ??
-                  TextStyle(
-                    fontSize: fontSize,
-                    color: isActive ? activeColor : inactiveColor,
-                    fontWeight:
-                    index == current ? FontWeight.bold : FontWeight.normal,
-                  ),
-              textAlign: TextAlign.center,
-            ),
-          );
-        }),
-      );
-    });
+  Widget _buildStepLabels(double spacing) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(widget.steps.length, (index) {
+        bool isActive = index <= _state.currentStep;
+        return SizedBox(
+          width: widget.circleRadius * 0.1 + spacing,
+          child: Text(
+            widget.steps[index],
+            style:
+                widget.labelTextStyle ??
+                TextStyle(
+                  fontSize: widget.fontSize,
+                  color: isActive ? widget.activeColor : widget.inactiveColor,
+                  fontWeight:
+                      index == _state.currentStep
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }),
+    );
   }
 
-  Widget _buildProgressLine(
-      StepIndicatorController ctrl, double availableWidth, double spacing) {
+  Widget _buildProgressLine(double availableWidth, double spacing) {
     return SizedBox(
       width: availableWidth,
-      height: circleRadius * 2 + 16,
+      height: widget.circleRadius * 2 + 16,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Background grey line
           Positioned(
-            left: sideLineLength,
-            right: sideLineLength,
+            left: widget.sideLineLength,
+            right: widget.sideLineLength,
             child: Container(
-              height: lineHeight,
+              height: widget.lineHeight,
               decoration: BoxDecoration(
-                color: inactiveLineColor,
+                color: widget.inactiveLineColor,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
           ),
-          // Left active line + arrow
           Positioned(
             left: 0,
             child: Row(
               children: [
                 Container(
-                  width: sideLineLength,
-                  height: lineHeight,
-                  color: activeLineColor,
+                  width: widget.sideLineLength,
+                  height: widget.lineHeight,
+                  color: widget.activeLineColor,
                 ),
                 Transform.rotate(
                   angle: math.pi,
                   child: Icon(
-                    leftArrowIcon,
-                    color: activeLineColor,
-                    size: iconSize,
+                    widget.leftArrowIcon,
+                    color: widget.activeLineColor,
+                    size: widget.iconSize,
                   ),
                 ),
               ],
             ),
           ),
-          // Right inactive line + arrow
           Positioned(
             right: 0,
             child: Row(
@@ -161,74 +175,68 @@ class StepIndicator extends StatelessWidget {
                 Transform.rotate(
                   angle: 0,
                   child: Icon(
-                    rightArrowIcon,
-                    color: inactiveLineColor,
-                    size: iconSize,
+                    widget.rightArrowIcon,
+                    color: widget.inactiveLineColor,
+                    size: widget.iconSize,
                   ),
                 ),
                 Container(
-                  width: sideLineLength,
-                  height: lineHeight,
-                  color: inactiveLineColor,
+                  width: widget.sideLineLength,
+                  height: widget.lineHeight,
+                  color: widget.inactiveLineColor,
                 ),
               ],
             ),
           ),
-          // Main progress line
           Positioned(
-            left: sideLineLength,
-            child: Obx(() {
-              int current = ctrl.currentStep.value;
-              double progressWidth =
-                  (current) * (spacing + circleRadius * 2);
-
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: AnimatedContainer(
-                  duration: animationDuration,
-                  height: lineHeight,
-                  width: progressWidth,
-                  color: activeLineColor,
-                ),
-              );
-            }),
+            left: widget.sideLineLength,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: AnimatedContainer(
+                duration: widget.animationDuration,
+                height: widget.lineHeight,
+                width: _state.currentStep * (spacing + widget.circleRadius * 2),
+                color: widget.activeLineColor,
+              ),
+            ),
           ),
-          // Step circles
           Positioned.fill(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(steps.length, (index) {
-                return Obx(() {
-                  int current = ctrl.currentStep.value;
-                  bool isActive = index <= current;
-                  bool isCompleted = index <= current;
+              children: List.generate(widget.steps.length, (index) {
+                bool isActive = index <= _state.currentStep;
+                bool isCompleted = index <= _state.currentStep;
 
-                  return GestureDetector(
-                    onTap: allowCircleTap ? () => ctrl.setStep(index) : null,
-                    child: SizedBox(
-                      width: circleRadius * 2,
-                      height: circleRadius * 2,
-                      child: AnimatedContainer(
-                        duration: animationDuration,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isActive
-                              ? activeLineColor
-                              : inactiveLineColor,
-                        ),
-                        child: Center(
-                          child: isCompleted
-                              ? Icon(
-                            activeIcon,
-                            color: Colors.white,
-                            size: iconSize,
-                          )
-                              : null,
-                        ),
+                return GestureDetector(
+                  onTap:
+                      widget.allowCircleTap
+                          ? () => _state.setStep(index)
+                          : null,
+                  child: SizedBox(
+                    width: widget.circleRadius * 2,
+                    height: widget.circleRadius * 2,
+                    child: AnimatedContainer(
+                      duration: widget.animationDuration,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color:
+                            isActive
+                                ? widget.activeLineColor
+                                : widget.inactiveLineColor,
+                      ),
+                      child: Center(
+                        child:
+                            isCompleted
+                                ? Icon(
+                                  widget.activeIcon,
+                                  color: Colors.white,
+                                  size: widget.iconSize,
+                                )
+                                : null,
                       ),
                     ),
-                  );
-                });
+                  ),
+                );
               }),
             ),
           ),
@@ -237,19 +245,19 @@ class StepIndicator extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationButtons(StepIndicatorController ctrl) {
+  Widget _buildNavigationButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        previousButton ??
+        widget.previousButton ??
             ElevatedButton(
-              onPressed: ctrl.previousStep,
+              onPressed: _state.previousStep,
               child: const Text('Previous'),
             ),
         const SizedBox(width: 20),
-        nextButton ??
+        widget.nextButton ??
             ElevatedButton(
-              onPressed: ctrl.nextStep,
+              onPressed: _state.nextStep,
               child: const Text('Next'),
             ),
       ],

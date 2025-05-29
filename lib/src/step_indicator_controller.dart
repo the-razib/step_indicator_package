@@ -1,47 +1,45 @@
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 
-class StepIndicatorController extends GetxController {
-  final RxInt currentStep = 0.obs;
+class StepIndicatorState extends ChangeNotifier {
+  int _currentStep;
   final int maxSteps;
-  final int initialStep;
   final void Function(int)? onStepChanged;
 
-  StepIndicatorController({
+  StepIndicatorState({
     required this.maxSteps,
-    this.initialStep = 0,
+    int initialStep = 0,
     this.onStepChanged,
-  });
+  }) : _currentStep = initialStep;
 
-  @override
-  void onInit() {
-    super.onInit();
-    currentStep.value = initialStep;
-  }
+  int get currentStep => _currentStep;
 
   void nextStep() {
-    if (currentStep.value < maxSteps) {
-      currentStep.value++;
+    if (_currentStep < maxSteps) {
+      _currentStep++;
       _notifyStepChanged();
+      notifyListeners();
     }
   }
 
   void previousStep() {
-    if (currentStep.value > 0) {
-      currentStep.value--;
+    if (_currentStep > 0) {
+      _currentStep--;
       _notifyStepChanged();
+      notifyListeners();
     }
   }
 
   void setStep(int step) {
     if (step >= 0 && step <= maxSteps) {
-      currentStep.value = step;
+      _currentStep = step;
       _notifyStepChanged();
+      notifyListeners();
     }
   }
 
   void _notifyStepChanged() {
     if (onStepChanged != null) {
-      onStepChanged!(currentStep.value);
+      onStepChanged!(_currentStep);
     }
   }
 }
