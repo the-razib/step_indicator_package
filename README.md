@@ -19,7 +19,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  step_indicator_package: ^1.1.0
+  step_indicator_package: ^1.1.2
 ```
 
 ## Usage
