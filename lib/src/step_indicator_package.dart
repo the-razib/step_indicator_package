@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'step_indicator_controller.dart';
 
+enum StepIndicatorDesign { circle, square, triangle, star, diamond, hexagon }
+
 class StepIndicator extends StatefulWidget {
   final List<String> steps;
   final StepIndicatorState? state;
@@ -29,6 +31,7 @@ class StepIndicator extends StatefulWidget {
   final bool allowCircleTap;
   final int initialStep;
   final void Function(int)? onStepChanged;
+  final StepIndicatorDesign design;
 
   const StepIndicator({
     super.key,
@@ -56,6 +59,7 @@ class StepIndicator extends StatefulWidget {
     this.allowCircleTap = true,
     this.initialStep = 0,
     this.onStepChanged,
+    this.design = StepIndicatorDesign.circle,
   });
 
   @override
@@ -128,6 +132,132 @@ class _StepIndicatorState extends State<StepIndicator> {
         );
       }),
     );
+  }
+
+  Widget _buildStepShape(bool isActive, bool isCompleted) {
+    final size = widget.circleRadius * 2;
+    final color = isActive ? widget.activeLineColor : widget.inactiveLineColor;
+
+    switch (widget.design) {
+      case StepIndicatorDesign.circle:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+          child: Center(
+            child:
+                isCompleted
+                    ? Icon(
+                      widget.activeIcon,
+                      color: Colors.white,
+                      size: widget.iconSize,
+                    )
+                    : null,
+          ),
+        );
+
+      case StepIndicatorDesign.square:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Center(
+            child:
+                isCompleted
+                    ? Icon(
+                      widget.activeIcon,
+                      color: Colors.white,
+                      size: widget.iconSize,
+                    )
+                    : null,
+          ),
+        );
+
+      case StepIndicatorDesign.triangle:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          child: CustomPaint(
+            painter: TrianglePainter(color: color),
+            child: Center(
+              child:
+                  isCompleted
+                      ? Icon(
+                        widget.activeIcon,
+                        color: Colors.white,
+                        size: widget.iconSize,
+                      )
+                      : null,
+            ),
+          ),
+        );
+
+      case StepIndicatorDesign.star:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          child: CustomPaint(
+            painter: StarPainter(color: color),
+            child: Center(
+              child:
+                  isCompleted
+                      ? Icon(
+                        widget.activeIcon,
+                        color: Colors.white,
+                        size: widget.iconSize,
+                      )
+                      : null,
+            ),
+          ),
+        );
+
+      case StepIndicatorDesign.diamond:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          child: CustomPaint(
+            painter: DiamondPainter(color: color),
+            child: Center(
+              child:
+                  isCompleted
+                      ? Icon(
+                        widget.activeIcon,
+                        color: Colors.white,
+                        size: widget.iconSize,
+                      )
+                      : null,
+            ),
+          ),
+        );
+
+      case StepIndicatorDesign.hexagon:
+        return AnimatedContainer(
+          duration: widget.animationDuration,
+          width: size,
+          height: size,
+          child: CustomPaint(
+            painter: HexagonPainter(color: color),
+            child: Center(
+              child:
+                  isCompleted
+                      ? Icon(
+                        widget.activeIcon,
+                        color: Colors.white,
+                        size: widget.iconSize,
+                      )
+                      : null,
+            ),
+          ),
+        );
+    }
   }
 
   Widget _buildProgressLine(double availableWidth, double spacing) {
@@ -212,30 +342,7 @@ class _StepIndicatorState extends State<StepIndicator> {
                       widget.allowCircleTap
                           ? () => _state.setStep(index)
                           : null,
-                  child: SizedBox(
-                    width: widget.circleRadius * 2,
-                    height: widget.circleRadius * 2,
-                    child: AnimatedContainer(
-                      duration: widget.animationDuration,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color:
-                            isActive
-                                ? widget.activeLineColor
-                                : widget.inactiveLineColor,
-                      ),
-                      child: Center(
-                        child:
-                            isCompleted
-                                ? Icon(
-                                  widget.activeIcon,
-                                  color: Colors.white,
-                                  size: widget.iconSize,
-                                )
-                                : null,
-                      ),
-                    ),
-                  ),
+                  child: _buildStepShape(isActive, isCompleted),
                 );
               }),
             ),
@@ -263,4 +370,143 @@ class _StepIndicatorState extends State<StepIndicator> {
       ],
     );
   }
+}
+
+class TrianglePainter extends CustomPainter {
+  final Color color;
+
+  TrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+
+    final path =
+        Path()
+          ..moveTo(size.width / 2, 0)
+          ..lineTo(size.width, size.height)
+          ..lineTo(0, size.height)
+          ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(TrianglePainter oldDelegate) => color != oldDelegate.color;
+}
+
+class StarPainter extends CustomPainter {
+  final Color color;
+
+  StarPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final center = Offset(size.width / 2, size.height / 2);
+    final outerRadius = size.width / 2;
+    final innerRadius = outerRadius * 0.4;
+
+    for (var i = 0; i < 5; i++) {
+      final outerAngle = (i * 2 * math.pi / 5) - math.pi / 2;
+      final innerAngle = outerAngle + math.pi / 5;
+
+      if (i == 0) {
+        path.moveTo(
+          center.dx + outerRadius * math.cos(outerAngle),
+          center.dy + outerRadius * math.sin(outerAngle),
+        );
+      } else {
+        path.lineTo(
+          center.dx + outerRadius * math.cos(outerAngle),
+          center.dy + outerRadius * math.sin(outerAngle),
+        );
+      }
+
+      path.lineTo(
+        center.dx + innerRadius * math.cos(innerAngle),
+        center.dy + innerRadius * math.sin(innerAngle),
+      );
+    }
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(StarPainter oldDelegate) => color != oldDelegate.color;
+}
+
+class DiamondPainter extends CustomPainter {
+  final Color color;
+
+  DiamondPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+
+    final path =
+        Path()
+          ..moveTo(size.width / 2, 0)
+          ..lineTo(size.width, size.height / 2)
+          ..lineTo(size.width / 2, size.height)
+          ..lineTo(0, size.height / 2)
+          ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(DiamondPainter oldDelegate) => color != oldDelegate.color;
+}
+
+class HexagonPainter extends CustomPainter {
+  final Color color;
+
+  HexagonPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+
+    for (var i = 0; i < 6; i++) {
+      final angle = (i * 2 * math.pi / 6) - math.pi / 6;
+      if (i == 0) {
+        path.moveTo(
+          center.dx + radius * math.cos(angle),
+          center.dy + radius * math.sin(angle),
+        );
+      } else {
+        path.lineTo(
+          center.dx + radius * math.cos(angle),
+          center.dy + radius * math.sin(angle),
+        );
+      }
+    }
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(HexagonPainter oldDelegate) => color != oldDelegate.color;
 }
