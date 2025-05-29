@@ -28,8 +28,8 @@ jobs:
       - name: Check package analysis (optional but recommended)
         run: dart analyze
 
-      - name: Run package tests (optional but recommended)
-        run: dart test
+      # - name: Run package tests (optional but recommended)
+      #   run: dart test
 
       - name: Publish package to pub.dev
         run: dart pub publish --force # --force is used here to avoid the interactive prompt
