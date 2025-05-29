@@ -1,0 +1,35 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*' # Triggers on pushes of tags like v1.0.0, v2.1.5, v1.0.0-beta.1, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # REQUIRED for authenticating with pub.dev using OIDC
+      contents: read # Allows checking out your repository code
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Uses the latest recommended checkout action
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2 # Uses the latest recommended Flutter setup action
+        with:
+          flutter-version: '3.32.0' # Uses the latest stable Flutter 3.x.x release
+          channel: 'stable' # Ensure we use the stable channel
+
+      - name: Get package dependencies
+        run: dart pub get
+
+      - name: Check package analysis (optional but recommended)
+        run: dart analyze
+
+      - name: Run package tests (optional but recommended)
+        run: dart test
+
+      - name: Publish package to pub.dev
+        run: dart pub publish --force # --force is used here to avoid the interactive prompt
