@@ -1,6 +1,6 @@
 name: step_indicator_package
 description: "Step indicator package"
-version: 1.0.1
+version: 1.1.0
 homepage: https://github.com/the-razib/step_indicator_package
 repository: https://github.com/the-razib/step_indicator_package
 license: MIT
