@@ -4,6 +4,7 @@ A customizable step indicator widget for Flutter applications. This package prov
 
 ## Features
 
+- Multiple design options (Circle, Square, Triangle, Star, Diamond, Hexagon)
 - Customizable step indicators with labels
 - Animated progress transitions
 - Navigation buttons (Previous/Next)
@@ -35,6 +36,17 @@ StepIndicator(
 )
 ```
 
+### With Custom Design
+
+```dart
+StepIndicator(
+  steps: const ["Step 1", "Step 2", "Step 3", "Step 4"],
+  design: StepIndicatorDesign.star, // Choose from: circle, square, triangle, star, diamond, hexagon
+  activeColor: Colors.blue,
+  inactiveColor: Colors.grey,
+)
+```
+
 ### With Custom State Management
 
 ```dart
@@ -51,6 +63,7 @@ final stepState = StepIndicatorState(
 StepIndicator(
   steps: const ["Step 1", "Step 2", "Step 3", "Step 4"],
   state: stepState,
+  design: StepIndicatorDesign.diamond,
 )
 ```
 
@@ -59,6 +72,7 @@ StepIndicator(
 ```dart
 StepIndicator(
   steps: const ["Step 1", "Step 2", "Step 3"],
+  design: StepIndicatorDesign.circle, // Default design
   circleRadius: 20.0,
   lineHeight: 8.0,
   fontSize: 12.0,
@@ -78,8 +92,9 @@ StepIndicator(
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | steps | List<String> | ["Request", "Pending", "Confirmed", "Completed"] | List of step labels |
+| design | StepIndicatorDesign | StepIndicatorDesign.circle | Design of the step indicators (circle, square, triangle, star, diamond, hexagon) |
 | state | StepIndicatorState? | null | Optional state management instance |
-| circleRadius | double | 20.0 | Radius of the step circles |
+| circleRadius | double | 20.0 | Radius of the step indicators |
 | lineHeight | double | 8.0 | Height of the connecting lines |
 | fontSize | double | 10.0 | Font size for step labels |
 | paddingHorizontal | double | 32.0 | Horizontal padding |
@@ -98,9 +113,20 @@ StepIndicator(
 | nextButton | Widget? | null | Custom next button |
 | showNavigationButtons | bool | true | Show navigation buttons |
 | showStepsText | bool | true | Show step labels |
-| allowCircleTap | bool | true | Allow tapping on circles |
+| allowCircleTap | bool | true | Allow tapping on indicators |
 | initialStep | int | 0 | Initial step index |
 | onStepChanged | Function(int)? | null | Callback when step changes |
+
+## Available Designs
+
+The package supports the following designs for step indicators:
+
+1. **Circle** (Default) - Classic circular indicators
+2. **Square** - Square indicators with rounded corners
+3. **Triangle** - Triangular indicators pointing upward
+4. **Star** - Five-pointed star indicators
+5. **Diamond** - Diamond-shaped indicators
+6. **Hexagon** - Six-sided hexagonal indicators
 
 ## State Management
 

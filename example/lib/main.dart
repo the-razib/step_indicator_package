@@ -14,6 +14,7 @@ class StepIndicatorExampleApp extends StatelessWidget {
     return MaterialApp(
       title: 'Step Indicator Example',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const StepIndicatorExamplePage(),
     );
   }
@@ -30,17 +31,24 @@ class StepIndicatorExamplePage extends StatefulWidget {
 
 class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
   late StepIndicatorState stepState;
+  StepIndicatorDesign currentDesign = StepIndicatorDesign.circle;
 
   @override
   void initState() {
     super.initState();
     stepState = StepIndicatorState(
       maxSteps: 3, // (Total steps - 1)
-      initialStep: 1, // Start from step 1
+      initialStep: 0, // Start from step 1
       onStepChanged: (step) {
         debugPrint('Step changed to: $step');
       },
     );
+  }
+
+  void _changeDesign(StepIndicatorDesign design) {
+    setState(() {
+      currentDesign = design;
+    });
   }
 
   @override
@@ -50,37 +58,58 @@ class _StepIndicatorExamplePageState extends State<StepIndicatorExamplePage> {
         title: const Text('Step Indicator Demo'),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             StepIndicator(
               steps: const ["Requested", "Processing", "Shipped", "Delivered"],
               state: stepState,
               allowCircleTap: true,
-              initialStep: 1,
-              onStepChanged: (index) {
-                debugPrint('Current selected step: $index');
-              },
-              activeColor: Colors.green,
+              design: currentDesign,
+              activeColor: Colors.blue,
               inactiveColor: Colors.grey,
-              activeLineColor: Colors.green,
+              activeLineColor: Colors.blue,
               inactiveLineColor: Colors.grey,
               showNavigationButtons: true,
               showStepsText: true,
             ),
             const SizedBox(height: 40),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDesignButton(StepIndicatorDesign.circle, 'Circle'),
+                _buildDesignButton(StepIndicatorDesign.square, 'Square'),
+                _buildDesignButton(StepIndicatorDesign.triangle, 'Triangle'),
+                _buildDesignButton(StepIndicatorDesign.star, 'Star'),
+                _buildDesignButton(StepIndicatorDesign.diamond, 'Diamond'),
+                _buildDesignButton(StepIndicatorDesign.hexagon, 'Hexagon'),
+              ],
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                stepState.setStep(
-                  2,
-                ); // Example: Move to step 2 programmatically
+                stepState.setStep(2);
               },
               child: const Text('Move to Step 3'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDesignButton(StepIndicatorDesign design, String label) {
+    final isSelected = currentDesign == design;
+    return ElevatedButton(
+      onPressed: () => _changeDesign(design),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isSelected ? Colors.blue : Colors.grey[200],
+        foregroundColor: isSelected ? Colors.white : Colors.black,
+      ),
+      child: Text(label),
     );
   }
 }
